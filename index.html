@@ -2,129 +2,272 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Link Tree</title>
+  <title>HTML Beginner Sandbox</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <style>
+    /* ===== Body & container ===== */
     body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-        Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
       background-color: #0d1117;
       color: #c9d1d9;
       display: flex;
       justify-content: center;
-      padding: 40px 16px;
+      padding: 40px 16px 160px;
     }
+    .container { width: 100%; max-width: 720px; }
 
-    .container {
-      width: 100%;
-      max-width: 700px;
-    }
+    .header { text-align: center; margin-bottom: 32px; }
+    .header h1 { margin: 0; font-size: 2.2rem; }
+    .header p { margin-top: 8px; color: #8b949e; line-height: 1.5; }
 
-    h1 {
-      text-align: center;
-      margin-bottom: 32px;
-      font-size: 2rem;
-    }
-
-    .project {
+    /* ===== Sandbox area ===== */
+    .sandbox {
       background: #161b22;
       border: 1px solid #30363d;
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 16px;
+      border-radius: 12px;
+      padding: 20px;
     }
-
-    .project-title {
-      font-size: 1.2rem;
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
-
-    .buttons {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 8px 14px;
-      border-radius: 6px;
-      border: 1px solid #30363d;
-      background: #21262d;
+    textarea {
+      width: 100%;
+      min-height: 200px;
+      background: #0d1117;
       color: #c9d1d9;
-      text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 500;
-      transition: background 0.15s ease, border-color 0.15s ease;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 12px;
+      font-family: monospace;
+      font-size: 0.95rem;
+      resize: vertical;
+      margin-bottom: 10px;
+      line-height: 1.4;
+      outline: none;
+    }
+    textarea.error-line {
+      border-color: #f85149;
+      box-shadow: inset 0 0 0 2px rgba(248, 81, 73, 0.3);
+    }
+    iframe {
+      width: 100%;
+      height: 240px;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      background: #ffffff;
     }
 
-    .btn:hover {
-      background: #30363d;
-      border-color: #8b949e;
-    }
+    /* ===== Buttons ===== */
+    .controls { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+    .run-btn { padding: 10px 18px; border-radius: 8px; border: none; background: #238636; color: #ffffff; font-weight: 600; cursor: pointer; }
+    .run-btn:hover { background: #2ea043; }
+    .stop-btn { padding: 10px 18px; border-radius: 8px; border: 1px solid #30363d; background: #21262d; color: #c9d1d9; font-weight: 600; cursor: pointer; }
+    .stop-btn:hover { background: #30363d; }
+    .controls.extra { margin-bottom: 14px; gap: 8px; }
+    select { padding: 8px 10px; border-radius: 6px; border: 1px solid #30363d; background: #21262d; color: #c9d1d9; font-size: 0.9rem; cursor: pointer; }
 
-    .btn.repo {
-      background: #238636;
-      border-color: #2ea043;
-      color: #ffffff;
+    /* ===== Index button & panel ===== */
+    .index-button {
+      position: fixed; bottom: 96px; right: 16px;
+      padding: 10px 14px; background: #1f6feb; color: #ffffff; border-radius: 999px;
+      font-size: 0.85rem; font-weight: 600; border: none; cursor: pointer;
     }
+    .index-panel {
+      position: fixed; bottom: 150px; right: 16px; width: 320px; max-height: 65vh; overflow-y: auto;
+      background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 14px; display: none;
+    }
+    .index-panel h3 { margin-top: 0; border-bottom: 1px solid #30363d; padding-bottom: 6px; font-size: 1rem; }
+    .tag { font-family: monospace; font-size: 0.85rem; padding: 6px 8px; border-radius: 6px; margin-bottom: 6px; }
+    .structure { background: rgba(31,111,235,0.15); color: #79c0ff; }
+    .text { background: rgba(35,134,54,0.15); color: #7ee787; }
+    .media { background: rgba(163,113,247,0.15); color: #d2a8ff; }
+    .form { background: rgba(249,140,66,0.15); color: #ffa657; }
+    .desc { font-size: 0.75rem; color: #8b949e; }
 
-    .btn.repo:hover {
-      background: #2ea043;
-    }
-
-    @media (max-width: 480px) {
-      .buttons {
-        flex-direction: column;
-      }
-    }
+    /* ===== Status messages ===== */
+    .status { position: fixed; bottom: 16px; left: 0; right: 0; text-align: center; font-size: 0.9rem; }
+    .status.error { color: #f85149; }
+    .status.success { color: #3fb950; }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Ac1d's Active Projects</h1>
 
-    <div class="project">
-      <div class="project-title">FATED Official Website</div>
-      <div class="buttons">
-        <a class="btn repo" href="https://github.com/But-I-have-a-Gun/FATED/" target="_blank">
-          Repo
-        </a>
-        <a class="btn" href="https://but-i-have-a-gun.github.io/FATED/Home/" target="_blank">
-          Website
-        </a>
-      </div>
+    <!-- Header -->
+    <div class="header">
+      <h1>HTML Beginner Sandbox</h1>
+      <p>Write HTML → click Run → learn from the result</p>
     </div>
 
-    <div class="project">
-      <div class="project-title">Service Hour Tracker</div>
-      <div class="buttons">
-        <a class="btn repo" href="https://github.com/But-I-have-a-Gun/Service-Hour-Tracker" target="_blank">
-          Repo
-        </a>
-        <a class="btn" href="https://but-i-have-a-gun.github.io/Service-Hour-Tracker/" target="_blank">
-          Website
-        </a>
-      </div>
-    </div>
+    <!-- Sandbox -->
+    <div class="sandbox">
 
-    <div class="project">
-      <div class="project-title">Coming Soon.</div>
-      <div class="buttons">
-        <a class="btn repo" href="https://github.com/But-I-have-a-Gun/Blank" target="_blank">
-          Repo
-        </a>
-        <a class="btn" href="https://github.com/But-I-have-a-Gun/Blank" target="_blank">
-          Website
-        </a>
+      <!-- Extra controls: snippets + import/export -->
+      <div class="controls extra">
+        <select id="snippetSelect">
+          <option value="">Insert a starter snippet...</option>
+          <option value="hello">Hello World</option>
+          <option value="list">Simple List</option>
+          <option value="form">Simple Form</option>
+        </select>
+        <button onclick="triggerImport()">Import HTML</button>
+        <button onclick="exportHTML()">Export HTML</button>
       </div>
-    </div>
+      <input type="file" id="importFile" style="display:none" onchange="importHTML(event)" />
 
+      <textarea id="editor" placeholder="Try this:
+<h1>Hello World</h1>
+<p>This is my first page.</p>
+<button>Click me</button>
+"></textarea>
+
+      <div class="controls">
+        <button class="run-btn" onclick="runCode()">▶ Run</button>
+        <button class="stop-btn" onclick="stopCode()">⏹ Stop</button>
+      </div>
+
+      <iframe id="output"></iframe>
+    </div>
   </div>
+
+  <!-- Index toggle button -->
+  <button class="index-button" onclick="toggleIndex()">HTML Index</button>
+
+  <!-- HTML Index Panel -->
+  <div class="index-panel" id="indexPanel">
+    <h3>Structure</h3>
+    <div class="tag structure">&lt;div&gt; … &lt;/div&gt;<div class="desc">Generic container</div></div>
+    <div class="tag structure">&lt;body&gt; … &lt;/body&gt;<div class="desc">Visible page content</div></div>
+
+    <h3>Text</h3>
+    <div class="tag text">&lt;h1&gt; … &lt;/h1&gt;<div class="desc">Main heading</div></div>
+    <div class="tag text">&lt;p&gt; … &lt;/p&gt;<div class="desc">Paragraph</div></div>
+    <div class="tag text">&lt;span&gt; … &lt;/span&gt;<div class="desc">Inline text</div></div>
+    <div class="tag text">&lt;br /&gt;<div class="desc">Line break (self-closing)</div></div>
+
+    <h3>Media</h3>
+    <div class="tag media">&lt;img src="" /&gt;<div class="desc">Image (self-closing)</div></div>
+    <div class="tag media">&lt;video&gt; … &lt;/video&gt;<div class="desc">Video player</div></div>
+    <div class="tag media">&lt;a href=""&gt; … &lt;/a&gt;<div class="desc">Link</div></div>
+
+    <h3>Forms</h3>
+    <div class="tag form">&lt;form&gt; … &lt;/form&gt;<div class="desc">Form container</div></div>
+    <div class="tag form">&lt;label&gt; … &lt;/label&gt;<div class="desc">Input label</div></div>
+    <div class="tag form">&lt;input type="text" /&gt;<div class="desc">Input field (self-closing)</div></div>
+    <div class="tag form">&lt;button&gt; … &lt;/button&gt;<div class="desc">Clickable button</div></div>
+  </div>
+  <!-- End of Index panel -->
+
+  <!-- Status messages -->
+  <div class="status" id="status"></div>
+
+  <script>
+    const editor = document.getElementById("editor");
+    const output = document.getElementById("output");
+    const status = document.getElementById("status");
+    const panel = document.getElementById("indexPanel");
+
+    // Toggle HTML index panel
+    function toggleIndex() { panel.style.display = panel.style.display === "block" ? "none" : "block"; }
+
+    // Stop code execution
+    function stopCode() {
+      output.srcdoc = "";
+      status.textContent = "";
+      status.className = "status";
+    }
+
+    // Run code & detect simple tag errors
+    function runCode() {
+      clearStatus();
+      const code = editor.value;
+      if (!code.trim()) return showError("Nothing to run yet.", 1);
+
+      const lines = code.split("\n");
+      const stack = [];
+
+      for (let i = 0; i < lines.length; i++) {
+        const matches = lines[i].match(/<\/?([a-z]+)[^>]*>/gi) || [];
+        for (const tag of matches) {
+          if (tag.startsWith("</")) {
+            if (!stack.length || stack.pop() !== tag.slice(2, -1)) {
+              return showError("This tag doesn’t have a matching opening tag.", i + 1);
+            }
+          } else if (!tag.endsWith("/>")) {
+            stack.push(tag.slice(1, -1).split(" ")[0]);
+          }
+        }
+      }
+
+      if (stack.length) return showError(`Missing a closing tag like </${stack[stack.length - 1]}>.`, lines.length);
+
+      // Success: run code
+      output.srcdoc = code;
+      editor.classList.remove("error-line");
+      status.textContent = "All good! Your HTML ran successfully.";
+      status.className = "status success";
+    }
+
+    function showError(message, line) {
+      editor.classList.add("error-line");
+      status.textContent = `Line ${line}: ${message}`;
+      status.className = "status error";
+    }
+
+    function clearStatus() { status.textContent = ""; status.className = "status"; }
+
+    // ----- Starter Snippets -----
+    const snippets = {
+      hello: `<h1>Hello World!</h1>
+<p>Welcome to your first HTML page.</p>`,
+      list: `<h2>My Favorite Colors</h2>
+<ul>
+  <li>Red</li>
+  <li>Green</li>
+  <li>Blue</li>
+</ul>`,
+      form: `<form>
+<label>Name:</label>
+<input type="text" placeholder="Your name" />
+<button>Submit</button>
+</form>`
+    };
+
+    const snippetSelect = document.getElementById("snippetSelect");
+    if (snippetSelect) {
+      snippetSelect.addEventListener("change", function() {
+        const key = this.value;
+        if (key && snippets[key]) {
+          editor.value = snippets[key];
+          clearStatus();
+        }
+        this.value = "";
+      });
+    }
+
+    // ----- Export HTML -----
+    function exportHTML() {
+      const code = editor.value;
+      const blob = new Blob([code], { type: "text/html" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "my_page.html";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // ----- Import HTML -----
+    function triggerImport() { document.getElementById("importFile").click(); }
+    function importHTML(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        editor.value = e.target.result;
+        clearStatus();
+      };
+      reader.readAsText(file);
+    }
+  </script>
 </body>
 </html>
